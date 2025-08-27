@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cosine Wave Generator</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+    }
+    canvas {
+      max-width: 800px;
+    }
+  </style>
+</head>
+<body>
+  <h2></h2>
+
+  <label for="frequency">Enter Frequency (Hz): </label>
+  <input type="number" id="frequency" value="440" min="1" max="20000">
+  <button onclick="generateWave()">Generate & Play</button>
+<!-- -->
+  <canvas id="waveChart"></canvas>
+
+  <script>
+    let chart;
+
+    function generateWave() {
+      const frequency = parseFloat(document.getElementById('frequency').value);
+      const sampleRate = 1000; // Number of points to plot
+      const duration = 1; // seconds 
+    
+
+      // Create cosine data
+      const labels = [];
+      const data = [];
+
+      for (let t = 0; t <= duration; t += 1 / sampleRate) {
+        labels.push(t.toFixed(4));
+        data.push(Math.cos(2 * Math.PI * frequency * t));
+      }
+
+      // Plot the wave using Chart.js
+      if (chart) chart.destroy(); // clear previous chart
+
+      const ctx = document.getElementById('waveChart').getContext('2d');
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: `${frequency} Hz Cosine Wave`,
+            data: data,
+            borderColor: 'blue',
+            borderWidth: 1,
+            pointRadius: 0,
+          }]
+        },
+        options: {
+          scales: {
+            x: {
+              title: { display: true, text: 'Time (s)' }
+            },
+            y: {
+              title: { display: true, text: 'Amplitude' },
+              suggestedMin: -1,
+              suggestedMax: 1
+            }
+          }
+        }
+      });
+
+      // Play sound using Web Audio API
+      playSound(frequency);
+    }
+
+    function playSound(frequency) {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+
+      oscillator.type = 'cosine'; // Not all browsers support 'cosine', fallback:
+      oscillator.type = 'sine';   // Use 'sine' as close alternative
+      oscillator.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime); // volume
+
+      oscillator.start();
+      oscillator.stop(audioCtx.currentTime + 1); // play for 1 second
+    }
+  </script>
+</body>
+</html>
