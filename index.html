@@ -15,12 +15,12 @@
   </style>
 </head>
 <body>
-  <h2></h2>
+  <h2>Cosine Wave Visualizer</h2>
 
   <label for="frequency">Enter Frequency (Hz): </label>
   <input type="number" id="frequency" value="440" min="1" max="20000">
   <button onclick="generateWave()">Generate & Play</button>
-<!-- -->
+
   <canvas id="waveChart"></canvas>
 
   <script>
@@ -31,7 +31,6 @@
       const frequency = parseFloat(document.getElementById('frequency').value);
       const sampleRate = 1000; // Number of points to plot
       const duration = 1; // seconds 
-    
 
       // Create cosine data
       const labels = [];
@@ -54,19 +53,29 @@
             label: `${frequency} Hz Cosine Wave`,
             data: data,
             borderColor: 'blue',
-            borderWidth: 1,
+            borderWidth: 2,
             pointRadius: 0,
+            fill: false,
           }]
         },
         options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Cosine Wave Graph'
+            }
+          },
           scales: {
             x: {
-              title: { display: true, text: 'Time (s)' }
+              title: { display: true, text: 'Time (s)' },
+              grid: { color: 'rgba(200, 200, 200, 0.2)' } // Grid color for X-axis
             },
             y: {
               title: { display: true, text: 'Amplitude' },
               suggestedMin: -1,
-              suggestedMax: 1
+              suggestedMax: 1,
+              grid: { color: 'rgba(200, 200, 200, 0.2)' } // Grid color for Y-axis
             }
           }
         }
