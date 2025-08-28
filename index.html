@@ -25,6 +25,7 @@
 
   <script>
     let chart;
+    let audioCtx; // Declare audio context outside the function
 
     function generateWave() {
       const frequency = parseFloat(document.getElementById('frequency').value);
@@ -76,7 +77,9 @@
     }
 
     function playSound(frequency) {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
       const oscillator = audioCtx.createOscillator();
       const gainNode = audioCtx.createGain();
 
