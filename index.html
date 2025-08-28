@@ -80,8 +80,7 @@
       const oscillator = audioCtx.createOscillator();
       const gainNode = audioCtx.createGain();
 
-      oscillator.type = 'cosine'; // Not all browsers support 'cosine', fallback:
-      oscillator.type = 'sine';   // Use 'sine' as close alternative
+      oscillator.type = 'sine'; // Use 'sine' as close alternative
       oscillator.frequency.setValueAtTime(frequency, audioCtx.currentTime);
       oscillator.connect(gainNode);
       gainNode.connect(audioCtx.destination);
